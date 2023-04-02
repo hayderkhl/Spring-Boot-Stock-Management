@@ -1,0 +1,46 @@
+package com.haidar.gestiondestock.controller;
+
+import com.haidar.gestiondestock.controller.api.CommandeClientApi;
+import com.haidar.gestiondestock.dto.CommandeClientDto;
+import com.haidar.gestiondestock.service.CommandeClientService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+
+@RestController
+public class CommandeClientController implements CommandeClientApi {
+
+    public CommandeClientController(CommandeClientService clientService) {
+        this.clientService = clientService;
+    }
+
+    CommandeClientService clientService;
+    @Override
+    public ResponseEntity<CommandeClientDto> save(CommandeClientDto dto) {
+        return ResponseEntity.ok(clientService.save(dto));
+    }
+
+    @Override
+    public ResponseEntity<CommandeClientDto> findById(Integer id) {
+        return ResponseEntity.ok(clientService.findById(id));
+       // OR :  return ResponseEntity.status(HttpStatus.OK).body(clientService.findById(id));
+    }
+
+    @Override
+    public ResponseEntity<CommandeClientDto> findByCode(String code) {
+        return ResponseEntity.ok(clientService.findByCode(code));
+    }
+
+    @Override
+    public ResponseEntity<List<CommandeClientDto>> findAll() {
+        return ResponseEntity.ok(clientService.findAll());
+    }
+
+    @Override
+    public ResponseEntity delete(Integer id) {
+        clientService.delete(id);
+        return ResponseEntity.ok().build();
+    }
+}
