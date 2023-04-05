@@ -37,7 +37,7 @@ public class CommandeClientDto {
         commandeClient.setId(commandeClientDto.getId());
         commandeClient.setCode(commandeClientDto.getCode());
         commandeClient.setDateCommande(commandeClientDto.getDateCommande());
-//        commandeClient.setClient((commandeClientDto.getClient()));
+       // commandeClient.setClient((commandeClientDto.getClient()));
         return commandeClient;
     }
 

@@ -38,9 +38,6 @@ public interface CategoryApi {
             @ApiResponse(code =200, message = "Les categories sont trouvés dans le DB / une List vide")})
     List<CategoryDto> findAll();
 
-    @DeleteMapping(value = APP_ROOT + "/categories/delete/{idcategoy}")
-    @ApiOperation(value = "supprimer un article par ID ", response = CategoryDto.class)
-    @ApiResponses(value = {
-            @ApiResponse(code =200, message = "L'objet category est supprimé de le DB")})
-    void delete(@PathVariable("idcategory") Integer id);
+    @DeleteMapping(APP_ROOT + "/categories/delete/{idCategoy}")
+    void delete(@PathVariable("idCategoy") Integer id);
 }

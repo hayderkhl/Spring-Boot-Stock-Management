@@ -21,11 +21,11 @@ import java.util.stream.Collectors;
 public class UtilisateurServiceImpl implements UtilisateurService {
 
     private UtilisateurRepository utilisateurRepository;
-
     private PasswordEncoder passwordEncoder;
     @Autowired
-    public UtilisateurServiceImpl(UtilisateurRepository utilisateurRepository) {
+    public UtilisateurServiceImpl(UtilisateurRepository utilisateurRepository, PasswordEncoder passwordEncoder) {
         this.utilisateurRepository = utilisateurRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -35,7 +35,9 @@ public class UtilisateurServiceImpl implements UtilisateurService {
             log.error("Article is not Utilisateur {}", dto);
             throw new InvalidEntityException("L'utilisateur n'est pas valide", ErrorCodes.UTILISATEUR_NOT_FOUND);
         }
-        passwordEncoder.encode(dto.getMotDePasse());
+
+        String encodedPassword = passwordEncoder.encode(dto.getMotDePasse());
+        dto.setMotDePasse(encodedPassword);
 
         return UtilisateurDto.fromEntity(utilisateurRepository.save(
                 UtilisateurDto.toEntity(dto)
