@@ -1,5 +1,6 @@
 package com.haidar.gestiondestock.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.haidar.gestiondestock.model.Adresse;
 import com.haidar.gestiondestock.model.Entreprise;
 import lombok.Builder;
@@ -14,13 +15,13 @@ public class EntrepriseDto {
     private Integer id;
     private String nom;
     private String description;
-    @Embedded
     private Adresse adresse;
     private String codeFiscal;
     private String photo;
     private String email;
     private String numTel;
     private String siteWeb;
+    @JsonIgnore
     private List<UtilisateurDto> utilisateurs;
 
     public static EntrepriseDto fromEntity(Entreprise entreprise) {
@@ -55,6 +56,7 @@ public class EntrepriseDto {
         entreprise.setEmail(entrepriseDto.getEmail());
         entreprise.setNumTel(entrepriseDto.getNumTel());
         entreprise.setSiteWeb(entrepriseDto.getSiteWeb());
+        entreprise.setCodeFiscal(entrepriseDto.getCodeFiscal());
         return entreprise;
     }
 

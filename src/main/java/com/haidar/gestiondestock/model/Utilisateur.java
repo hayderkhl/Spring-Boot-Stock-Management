@@ -26,7 +26,7 @@ public class Utilisateur extends AbstractEntity {
     private String motDePasse;
     @Embedded
     private Adresse adresse;
-    @Column(name = "name")
+    @Column(name = "photo")
     private String photo;
     @ManyToOne
     @JoinColumn(name = "identreprise")

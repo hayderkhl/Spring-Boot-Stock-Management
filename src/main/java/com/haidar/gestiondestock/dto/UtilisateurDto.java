@@ -3,10 +3,13 @@ package com.haidar.gestiondestock.dto;
 import com.haidar.gestiondestock.model.Utilisateur;
 import lombok.Builder;
 import lombok.Data;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
 import java.time.Instant;
 import java.util.List;
+import java.util.stream.Collectors;
+
 @Builder
 @Data
 public class UtilisateurDto {
@@ -17,7 +20,6 @@ public class UtilisateurDto {
     private String email;
     private Instant dateDeNaissance;
     private String motDePasse;
-    @Embedded
     private AdressDto adresse;
     private String photo;
     private EntrepriseDto entreprise;
@@ -27,14 +29,16 @@ public class UtilisateurDto {
         if(utilisateur == null) {
             return null;
         }
-       return UtilisateurDto.builder()
+        return UtilisateurDto.builder()
                 .id(utilisateur.getId())
                 .nom(utilisateur.getNom())
                 .prenom(utilisateur.getPrenom())
                 .email(utilisateur.getEmail())
-                .photo(utilisateur.getPhoto())
-                .dateDeNaissance(utilisateur.getDateDeNaissance())
                 .motDePasse(utilisateur.getMotDePasse())
+                .dateDeNaissance(utilisateur.getDateDeNaissance())
+                .adresse(AdressDto.fromEntity(utilisateur.getAdresse()))
+                .photo(utilisateur.getPhoto())
+                .entreprise(EntrepriseDto.fromEntity(utilisateur.getEntreprise()))
                 .build();
     }
 
@@ -48,9 +52,12 @@ public class UtilisateurDto {
         utilisateur.setNom(utilisateurDto.getNom());
         utilisateur.setPrenom(utilisateurDto.getPrenom());
         utilisateur.setEmail(utilisateurDto.getEmail());
-        utilisateur.setPhoto(utilisateurDto.getPhoto());
-        utilisateur.setDateDeNaissance(utilisateurDto.getDateDeNaissance());
         utilisateur.setMotDePasse(utilisateurDto.getMotDePasse());
+        utilisateur.setDateDeNaissance(utilisateurDto.getDateDeNaissance());
+        utilisateur.setAdresse(AdressDto.toEntity(utilisateurDto.getAdresse()));
+        utilisateur.setPhoto(utilisateurDto.getPhoto());
+        utilisateur.setEntreprise(EntrepriseDto.toEntity(utilisateurDto.getEntreprise()));
+
         return utilisateur;
     }
 
