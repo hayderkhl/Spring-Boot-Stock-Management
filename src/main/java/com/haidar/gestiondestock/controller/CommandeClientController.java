@@ -2,11 +2,13 @@ package com.haidar.gestiondestock.controller;
 
 import com.haidar.gestiondestock.controller.api.CommandeClientApi;
 import com.haidar.gestiondestock.dto.CommandeClientDto;
+import com.haidar.gestiondestock.model.EtatCommand;
 import com.haidar.gestiondestock.service.CommandeClientService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -42,5 +44,15 @@ public class CommandeClientController implements CommandeClientApi {
     public ResponseEntity delete(Integer id) {
         clientService.delete(id);
         return ResponseEntity.ok().build();
+    }
+
+    @Override
+    public ResponseEntity<CommandeClientDto> updateEtatCommand(Integer idcommand, EtatCommand etatCommand) {
+        return ResponseEntity.ok(clientService.updateEtatCommand(idcommand, etatCommand));
+    }
+
+    @Override
+    public ResponseEntity<CommandeClientDto> updateQuantiteCommande(Integer idcommand, Integer idLigneCommand, BigDecimal quantite) {
+        return ResponseEntity.ok(clientService.updateQuantiteCommande(idcommand, idLigneCommand, quantite));
     }
 }
