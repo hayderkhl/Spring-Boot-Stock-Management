@@ -2,6 +2,7 @@ package com.haidar.gestiondestock.dto;
 
 import com.haidar.gestiondestock.model.Client;
 import com.haidar.gestiondestock.model.CommandeClient;
+import com.haidar.gestiondestock.model.EtatCommand;
 import lombok.Builder;
 import lombok.Data;
 import java.time.Instant;
@@ -14,7 +15,9 @@ public class CommandeClientDto {
     private Integer id;
     private String code;
     private Instant dateCommande;
+    private EtatCommand etatCommand;
     private ClientDto client;
+    private Integer idEntreprise;
     private List<LigneCommandeClientDto> ligneCommandeClients;
 
     public static CommandeClientDto fromEntity(CommandeClient commandeClient) {
@@ -26,6 +29,8 @@ public class CommandeClientDto {
                 .code(commandeClient.getCode())
                 .dateCommande(commandeClient.getDateCommande())
                 .client(ClientDto.fromEntity(commandeClient.getClient()))
+                .etatCommand(commandeClient.getEtatCommande())
+                .idEntreprise(commandeClient.getIdEntreprise())
                 .build();
     }
 
@@ -37,8 +42,13 @@ public class CommandeClientDto {
         commandeClient.setId(commandeClientDto.getId());
         commandeClient.setCode(commandeClientDto.getCode());
         commandeClient.setDateCommande(commandeClientDto.getDateCommande());
-       // commandeClient.setClient((commandeClientDto.getClient()));
+        commandeClient.setEtatCommande(commandeClientDto.getEtatCommand());
+        commandeClient.setIdEntreprise(commandeClientDto.getIdEntreprise());
         return commandeClient;
+    }
+
+    public boolean isCommandeLivree() {
+        return EtatCommand.LIVREE.equals(this.etatCommand);
     }
 
 }

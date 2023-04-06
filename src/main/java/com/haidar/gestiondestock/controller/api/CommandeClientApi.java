@@ -1,10 +1,12 @@
 package com.haidar.gestiondestock.controller.api;
 
 import com.haidar.gestiondestock.dto.CommandeClientDto;
+import com.haidar.gestiondestock.model.EtatCommand;
 import io.swagger.annotations.Api;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import static com.haidar.gestiondestock.utils.Constants.APP_ROOT;
@@ -21,4 +23,9 @@ public interface CommandeClientApi {
     ResponseEntity<List<CommandeClientDto>> findAll();
      @DeleteMapping(APP_ROOT + "/commandesclients/delete/{idcommandeclient}")
     ResponseEntity delete(@PathVariable Integer idcommandeclient);
+     @PatchMapping(APP_ROOT + "/commandesclients/update/{idcommand}/{etatCommand}")
+     ResponseEntity<CommandeClientDto> updateEtatCommand(@PathVariable Integer idcommand, @PathVariable EtatCommand etatCommand);
+    @PatchMapping(APP_ROOT + "/commandesclients/update/quantite/{idcommand}/{idLigneCommand}/{quantite}")
+    ResponseEntity<CommandeClientDto> updateQuantiteCommande(@PathVariable Integer idcommand, @PathVariable Integer idLigneCommand ,@PathVariable BigDecimal quantite);
+
 }
