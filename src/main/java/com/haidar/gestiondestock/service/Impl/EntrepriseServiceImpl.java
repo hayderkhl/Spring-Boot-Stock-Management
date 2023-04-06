@@ -51,34 +51,7 @@ EntrepriseServiceImpl implements EntrepriseService {
                 entrepriseRepository.save(EntrepriseDto.toEntity(dto))
         );
 
-        UtilisateurDto utilisateur = fromEntreprise(savedEntreprise);
-
-        UtilisateurDto savedUser = utilisateurService.save(utilisateur);
-
-        RolesDto rolesDto = RolesDto.builder()
-                .roleName("ADMIN")
-                .utilisateur(savedUser)
-                .build();
-
-        rolesRepository.save(RolesDto.toEntity(rolesDto));
-
         return  savedEntreprise;
-    }
-
-    private UtilisateurDto fromEntreprise(EntrepriseDto dto) {
-
-        return UtilisateurDto.builder()
-                .nom(dto.getNom())
-                .prenom(dto.getCodeFiscal())
-                .email(dto.getEmail())
-                .motDePasse(generateRandomPassword())
-                .entreprise(dto)
-                .dateDeNaissance(Instant.now())
-                .photo(dto.getPhoto())
-                .build();
-    }
-    private String generateRandomPassword() {
-        return "som3R@nd0mP@$$word";
     }
 
     @Override

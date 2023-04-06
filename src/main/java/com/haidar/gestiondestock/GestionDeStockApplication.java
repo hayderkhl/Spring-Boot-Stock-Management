@@ -10,7 +10,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @SpringBootApplication
 @EnableJpaAuditing
-@EnableWebMvc
+//@EnableWebMvc
 public class GestionDeStockApplication {
 
     public static void main(String[] args) {
