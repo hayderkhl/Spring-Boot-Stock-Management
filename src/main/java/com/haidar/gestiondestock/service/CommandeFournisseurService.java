@@ -1,5 +1,6 @@
 package com.haidar.gestiondestock.service;
 
+import com.haidar.gestiondestock.dto.LigneCommandeFournisseurDto;
 import com.haidar.gestiondestock.model.EtatCommand;
 import com.haidar.gestiondestock.dto.CommandeFournisseurDto;
 
@@ -19,4 +20,6 @@ public interface CommandeFournisseurService {
     CommandeFournisseurDto updateArticle(Integer idCommande, Integer idLigneCommande, Integer idArticle);
     // Delete article ==> delete LigneCommandeFournisseur
     CommandeFournisseurDto deleteArticle(Integer idCommande, Integer idLigneCommande);
+    List<LigneCommandeFournisseurDto> findAllLignesCommandesFournisseurByCommandeFournisseurId(Integer idCommande);
+
 }

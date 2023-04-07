@@ -1,6 +1,9 @@
 package com.haidar.gestiondestock.controller.api;
 
 import com.haidar.gestiondestock.dto.ArticleDto;
+import com.haidar.gestiondestock.dto.LigneCommandeClientDto;
+import com.haidar.gestiondestock.dto.LigneCommandeFournisseurDto;
+import com.haidar.gestiondestock.dto.LigneVenteDto;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -44,4 +47,12 @@ public interface ArticleApi {
     @ApiResponses(value = {
             @ApiResponse(code =200, message = "L'objet article est supprimé de le DB")})
     void delete(@PathVariable("idArticle") Integer id);
+    @GetMapping(value = APP_ROOT + "/articles/all/historique/vente/{idArticle}", produces = MediaType.APPLICATION_JSON_VALUE)
+    List<LigneVenteDto> findHistoriqueVente(@PathVariable Integer idArticle);
+    @GetMapping(value = APP_ROOT + "/articles/all/historique/commandeclient/{idArticle}", produces = MediaType.APPLICATION_JSON_VALUE)
+    List<LigneCommandeClientDto> findHistoriqueCommandeClient(@PathVariable Integer idArticle);
+    @GetMapping(value = APP_ROOT + "/articles/all/historique/commandefournisseur/{idArticle}", produces = MediaType.APPLICATION_JSON_VALUE)
+    List<LigneCommandeFournisseurDto> findHistoriqueFournisseur(@PathVariable Integer idArticle);
+    @GetMapping(value = APP_ROOT + "/articles/filtre/category/{idCategory}", produces = MediaType.APPLICATION_JSON_VALUE)
+    List<ArticleDto> findAllArticleByIdCategory(@PathVariable Integer idCategory);
 }

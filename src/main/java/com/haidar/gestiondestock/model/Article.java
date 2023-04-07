@@ -29,6 +29,9 @@ public class Article extends AbstractEntity{
     @Column(name = "identreprise")
     private Integer idEntreprise;
 
+    @Column(name = "photo")
+    private String photo;
+
     @ManyToOne
     @JoinColumn(name = "idcategory")
     private Category category;
