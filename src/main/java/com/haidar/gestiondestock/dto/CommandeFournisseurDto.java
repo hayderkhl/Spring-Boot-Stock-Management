@@ -18,7 +18,7 @@ public class CommandeFournisseurDto {
     private Integer id;
     private String code;
     private Instant dateCommande;
-    private Fournisseur fournisseur;
+    private FournisseurDto fournisseur;
     private EtatCommand etatCommand;
     @JsonIgnore
     private List<LigneCommandeFournisseurDto> ligneCommandeFournisseurs;
@@ -32,7 +32,7 @@ public class CommandeFournisseurDto {
                 .code(commandeFournisseur.getCode())
                 .etatCommand(commandeFournisseur.getEtatCommande())
                 .dateCommande(commandeFournisseur.getDateCommande())
-                .fournisseur(commandeFournisseur.getFournisseur())
+                .fournisseur(FournisseurDto.fromEntity(commandeFournisseur.getFournisseur()))
                 .build();
     }
 
@@ -45,7 +45,7 @@ public class CommandeFournisseurDto {
         commandeFournisseur.setCode(commandeFournisseurDto.getCode());
         commandeFournisseur.setEtatCommande(commandeFournisseurDto.getEtatCommand());
         commandeFournisseur.setDateCommande(commandeFournisseurDto.getDateCommande());
-        commandeFournisseur.setFournisseur(commandeFournisseurDto.getFournisseur());
+        commandeFournisseur.setFournisseur(FournisseurDto.toEntity(commandeFournisseurDto.getFournisseur()));
         return commandeFournisseur;
     }
     public boolean isCommandeLivree() {

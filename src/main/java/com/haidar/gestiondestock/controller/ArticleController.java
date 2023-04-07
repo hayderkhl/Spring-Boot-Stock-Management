@@ -2,6 +2,9 @@ package com.haidar.gestiondestock.controller;
 
 import com.haidar.gestiondestock.controller.api.ArticleApi;
 import com.haidar.gestiondestock.dto.ArticleDto;
+import com.haidar.gestiondestock.dto.LigneCommandeClientDto;
+import com.haidar.gestiondestock.dto.LigneCommandeFournisseurDto;
+import com.haidar.gestiondestock.dto.LigneVenteDto;
 import com.haidar.gestiondestock.service.ArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
@@ -40,5 +43,25 @@ public class ArticleController implements ArticleApi {
     @Override
     public void delete(Integer id) {
         articleService.delete(id);
+    }
+
+    @Override
+    public List<LigneVenteDto> findHistoriqueVente(Integer idArticle) {
+        return articleService.findHistoriqueVente(idArticle);
+    }
+
+    @Override
+    public List<LigneCommandeClientDto> findHistoriqueCommandeClient(Integer idArticle) {
+        return articleService.findHistoriqueCommandeClient(idArticle);
+    }
+
+    @Override
+    public List<LigneCommandeFournisseurDto> findHistoriqueFournisseur(Integer idArticle) {
+        return articleService.findHistoriqueFournisseur(idArticle);
+    }
+
+    @Override
+    public List<ArticleDto> findAllArticleByIdCategory(Integer idCategory) {
+        return articleService.findAllArticleByIdCategory(idCategory);
     }
 }

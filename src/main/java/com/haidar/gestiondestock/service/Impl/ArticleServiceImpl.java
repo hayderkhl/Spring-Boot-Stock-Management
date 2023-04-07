@@ -4,8 +4,14 @@ import com.haidar.gestiondestock.Exception.EntityNotFoundException;
 import com.haidar.gestiondestock.Exception.ErrorCodes;
 import com.haidar.gestiondestock.Exception.InvalidEntityException;
 import com.haidar.gestiondestock.dto.ArticleDto;
+import com.haidar.gestiondestock.dto.LigneCommandeClientDto;
+import com.haidar.gestiondestock.dto.LigneCommandeFournisseurDto;
+import com.haidar.gestiondestock.dto.LigneVenteDto;
 import com.haidar.gestiondestock.model.Article;
 import com.haidar.gestiondestock.repository.ArticleRepository;
+import com.haidar.gestiondestock.repository.LigneCommandeClientRepository;
+import com.haidar.gestiondestock.repository.LigneCommandeFournisseurRepository;
+import com.haidar.gestiondestock.repository.LigneVenteRepository;
 import com.haidar.gestiondestock.service.ArticleService;
 import com.haidar.gestiondestock.validator.ArticleValidator;
 import lombok.extern.slf4j.Slf4j;
@@ -22,9 +28,18 @@ import java.util.stream.Collectors;
 public class ArticleServiceImpl implements ArticleService {
 
     private ArticleRepository articleRepository;
+    private LigneCommandeFournisseurRepository ligneCommandeFournisseurRepository;
+    private LigneVenteRepository ligneVenteRepository;
+    private LigneCommandeClientRepository ligneCommandeClientRepository;
     @Autowired
-    public ArticleServiceImpl(ArticleRepository articleRepository) {
+    public ArticleServiceImpl(ArticleRepository articleRepository,
+                              LigneCommandeFournisseurRepository ligneCommandeFournisseurRepository,
+                              LigneVenteRepository ligneVenteRepository,
+                              LigneCommandeClientRepository ligneCommandeClientRepository) {
         this.articleRepository = articleRepository;
+        this.ligneCommandeFournisseurRepository = ligneCommandeFournisseurRepository;
+        this.ligneVenteRepository = ligneVenteRepository;
+        this.ligneCommandeClientRepository = ligneCommandeClientRepository;
     }
     @Override
     public ArticleDto save(ArticleDto dto) {
@@ -74,13 +89,39 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
+    public List<LigneVenteDto> findHistoriqueVente(Integer idArticle) {
+        return ligneVenteRepository.findAllByArticleId(idArticle).stream()
+                .map(LigneVenteDto::fromEntity)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<LigneCommandeClientDto> findHistoriqueCommandeClient(Integer idArticle) {
+        return ligneCommandeClientRepository.findAllByArticleId(idArticle).stream()
+                .map(LigneCommandeClientDto::fromEntity)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<LigneCommandeFournisseurDto> findHistoriqueFournisseur(Integer idArticle) {
+        return ligneCommandeFournisseurRepository.findAllByArticleId(idArticle).stream()
+                .map(LigneCommandeFournisseurDto::fromEntity)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ArticleDto> findAllArticleByIdCategory(Integer idCategory) {
+        return articleRepository.findAllByCategoryId(idCategory).stream()
+                .map(ArticleDto::fromEntity)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public void delete(Integer id) {
         if(id == null) {
             log.error("Article is null");
             return;
         }
-
         articleRepository.deleteById(id);
-
     }
 }
