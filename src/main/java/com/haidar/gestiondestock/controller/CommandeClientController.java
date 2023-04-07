@@ -2,6 +2,7 @@ package com.haidar.gestiondestock.controller;
 
 import com.haidar.gestiondestock.controller.api.CommandeClientApi;
 import com.haidar.gestiondestock.dto.CommandeClientDto;
+import com.haidar.gestiondestock.dto.LigneCommandeClientDto;
 import com.haidar.gestiondestock.model.EtatCommand;
 import com.haidar.gestiondestock.service.CommandeClientService;
 import org.springframework.http.HttpStatus;
@@ -54,5 +55,25 @@ public class CommandeClientController implements CommandeClientApi {
     @Override
     public ResponseEntity<CommandeClientDto> updateQuantiteCommande(Integer idcommand, Integer idLigneCommand, BigDecimal quantite) {
         return ResponseEntity.ok(clientService.updateQuantiteCommande(idcommand, idLigneCommand, quantite));
+    }
+
+    @Override
+    public ResponseEntity<CommandeClientDto> updateClient(Integer idCommand, Integer idClient) {
+        return ResponseEntity.ok(clientService.updateClient(idCommand, idClient));
+    }
+
+    @Override
+    public ResponseEntity<CommandeClientDto> updateArticle(Integer idCommand, Integer idLigneCommand, Integer newIdArticle) {
+        return ResponseEntity.ok(clientService.updateArticle(idCommand, idLigneCommand, newIdArticle));
+    }
+
+    @Override
+    public ResponseEntity<CommandeClientDto> deleteArticle(Integer idCommand, Integer idLigneCommand) {
+        return ResponseEntity.ok(clientService.deleteArticle(idCommand, idLigneCommand));
+    }
+
+    @Override
+    public ResponseEntity<List<LigneCommandeClientDto>> findAllLignesCommandesClientByCommandeClientId(Integer idCommande) {
+        return ResponseEntity.ok(clientService.findAllLignesCommandesClientByCommandeClientId(idCommande));
     }
 }

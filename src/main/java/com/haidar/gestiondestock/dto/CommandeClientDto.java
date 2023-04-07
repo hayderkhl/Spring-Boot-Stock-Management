@@ -1,5 +1,6 @@
 package com.haidar.gestiondestock.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.haidar.gestiondestock.model.Client;
 import com.haidar.gestiondestock.model.CommandeClient;
 import com.haidar.gestiondestock.model.EtatCommand;
@@ -19,7 +20,7 @@ public class CommandeClientDto {
     private ClientDto client;
     private Integer idEntreprise;
     private List<LigneCommandeClientDto> ligneCommandeClients;
-
+    @JsonIgnore
     public static CommandeClientDto fromEntity(CommandeClient commandeClient) {
         if (commandeClient == null) {
             return null;
