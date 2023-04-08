@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import static com.haidar.gestiondestock.utils.Constants.APP_ROOT;
-@Api(APP_ROOT+ "/articles")
+@Api("articles")
 public interface ArticleApi {
 
     @PostMapping(value = APP_ROOT + "/articles/create", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
