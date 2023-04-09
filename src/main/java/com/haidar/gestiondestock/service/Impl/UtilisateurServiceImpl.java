@@ -3,6 +3,8 @@ package com.haidar.gestiondestock.service.Impl;
 import com.haidar.gestiondestock.Exception.EntityNotFoundException;
 import com.haidar.gestiondestock.Exception.ErrorCodes;
 import com.haidar.gestiondestock.Exception.InvalidEntityException;
+import com.haidar.gestiondestock.Exception.InvalidOperationException;
+import com.haidar.gestiondestock.dto.ChangeMotDePasseDto;
 import com.haidar.gestiondestock.dto.UtilisateurDto;
 import com.haidar.gestiondestock.model.Utilisateur;
 import com.haidar.gestiondestock.repository.UtilisateurRepository;
@@ -12,6 +14,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -82,5 +86,40 @@ public class UtilisateurServiceImpl implements UtilisateurService {
                 .map(UtilisateurDto::fromEntity)
                 .orElseThrow(() -> new EntityNotFoundException("Aucun Utilisateur avec ce mail" + email + "n'est trouve",
                         ErrorCodes.UTILISATEUR_NOT_FOUND));
+    }
+
+    @Override
+    public UtilisateurDto changeMotDePasse(ChangeMotDePasseDto dto) {
+        validate(dto);
+        Optional<Utilisateur> utilisateurOptional = utilisateurRepository.findById(dto.getId());
+        if(utilisateurOptional.isEmpty()) {
+            log.warn("aucun utilisateur de cette ID");
+            throw new EntityNotFoundException("Utilisateur not found", ErrorCodes.UTILISATEUR_NOT_FOUND);
+        }
+        Utilisateur utilisateur = utilisateurOptional.get();
+        utilisateur.setMotDePasse(dto.getMotDePasse());
+        return UtilisateurDto.fromEntity(
+                utilisateurRepository.save(utilisateur)
+        );
+    }
+    private void validate(ChangeMotDePasseDto dto) {
+        if(dto == null) {
+            log.warn("Impossible de modifier le mot de passe avec un objet null");
+            throw new InvalidOperationException("Aucune information est fournie pour changer le mot de passe",ErrorCodes.UTILISATEUR_CHANGE_PASSWORD_OBJECT_NOT_VALID);
+        }
+        if (dto.getId() == null) {
+            log.warn("ID utilisateur not found");
+            throw new InvalidOperationException("Aucune information est fournie pour changer le mot de passe",ErrorCodes.UTILISATEUR_CHANGE_PASSWORD_OBJECT_NOT_VALID);
+        }
+        if (!StringUtils.hasLength(dto.getMotDePasse()) || !StringUtils.hasLength(dto.getConfirmMotDePasse())) {
+            log.warn("Impossible de changer le mot de passe avec un mot de passe null");
+            throw new InvalidOperationException("Aucune information est fournie pour changer le mot de passe",ErrorCodes.UTILISATEUR_CHANGE_PASSWORD_OBJECT_NOT_VALID);
+
+        }
+        if (!dto.getMotDePasse().equals(dto.getConfirmMotDePasse())) {
+            log.warn("the passwords are different");
+            throw new InvalidOperationException("Different password",ErrorCodes.UTILISATEUR_CHANGE_PASSWORD_OBJECT_NOT_VALID);
+        }
+
     }
 }
