@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Builder
 @Data
-public class changeMotDePasseDto {
+public class ChangeMotDePasseDto {
 
     private Integer id;
 

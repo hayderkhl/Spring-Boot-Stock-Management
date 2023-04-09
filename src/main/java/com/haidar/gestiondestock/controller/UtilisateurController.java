@@ -1,6 +1,7 @@
 package com.haidar.gestiondestock.controller;
 
 import com.haidar.gestiondestock.controller.api.UtilisateurApi;
+import com.haidar.gestiondestock.dto.ChangeMotDePasseDto;
 import com.haidar.gestiondestock.dto.UtilisateurDto;
 import com.haidar.gestiondestock.service.UtilisateurService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,5 +37,10 @@ public class UtilisateurController implements UtilisateurApi {
     @Override
     public void delete(Integer idfutilisateur) {
        utilisateurService.delete(idfutilisateur);
+    }
+
+    @Override
+    public UtilisateurDto changerMotDePasse(ChangeMotDePasseDto dto) {
+        return utilisateurService.changeMotDePasse(dto);
     }
 }

@@ -1,5 +1,6 @@
 package com.haidar.gestiondestock.service;
 
+import com.haidar.gestiondestock.dto.ChangeMotDePasseDto;
 import com.haidar.gestiondestock.dto.ClientDto;
 import com.haidar.gestiondestock.dto.UtilisateurDto;
 
@@ -16,4 +17,6 @@ public interface UtilisateurService {
     void delete(Integer id);
 
     UtilisateurDto findByEmail(String email);
+
+    UtilisateurDto changeMotDePasse(ChangeMotDePasseDto dto);
 }

@@ -1,5 +1,6 @@
 package com.haidar.gestiondestock.controller.api;
 
+import com.haidar.gestiondestock.dto.ChangeMotDePasseDto;
 import com.haidar.gestiondestock.dto.UtilisateurDto;
 import io.swagger.annotations.Api;
 import org.springframework.web.bind.annotation.*;
@@ -22,4 +23,7 @@ public interface UtilisateurApi {
 
     @DeleteMapping(value = APP_ROOT + "/utilisateurs/delete/{idfutilisateur}")
     void delete(@PathVariable Integer idfutilisateur);
+
+    @PostMapping(APP_ROOT + "/update/password")
+    UtilisateurDto changerMotDePasse(@RequestBody ChangeMotDePasseDto dto);
 }
