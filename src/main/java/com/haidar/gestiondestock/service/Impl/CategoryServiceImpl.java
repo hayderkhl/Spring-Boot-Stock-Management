@@ -88,11 +88,6 @@ public class CategoryServiceImpl implements CategoryService {
             log.error("Category ID is null");
             return;
         }
-//        List<Article> articles = articleRepository.findAllByCategoryId(id);
-//        if (!articles.isEmpty()) {
-//            throw new InvalidOperationException("Impossible de supprimer cette categorie qui est deja utilise",
-//                    ErrorCodes.CATEGORY_ALREADY_IN_USE);
-//        }
         categoryRepository.deleteById(id);
     }
 }

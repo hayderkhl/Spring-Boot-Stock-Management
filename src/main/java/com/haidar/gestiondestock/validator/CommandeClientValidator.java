@@ -10,12 +10,25 @@ public class CommandeClientValidator {
 
     public static List<String> validate(CommandeClientDto dto) {
         List<String> errors = new ArrayList<>();
+        if (dto == null) {
+            errors.add("Veuillez renseigner le code de la commande");
+            errors.add("Veuillez renseigner la date de la commande");
+            errors.add("Veuillez renseigner l'etat de la commande");
+            errors.add("Veuillez renseigner le client");
+            return errors;
+        }
 
         if (!StringUtils.hasLength(dto.getCode())) {
-            errors.add("veuillez saisir le code de commande client");
+            errors.add("Veuillez renseigner le code de la commande");
         }
         if (dto.getDateCommande() == null) {
-            errors.add("veuillez saisir la date de commande client");
+            errors.add("Veuillez renseigner la date de la commande");
+        }
+        if (!StringUtils.hasLength(dto.getEtatCommand().toString())) {
+            errors.add("Veuillez renseigner l'etat de la commande");
+        }
+        if (dto.getClient() == null || dto.getClient().getId() == null) {
+            errors.add("Veuillez renseigner le client");
         }
 
         return errors;
