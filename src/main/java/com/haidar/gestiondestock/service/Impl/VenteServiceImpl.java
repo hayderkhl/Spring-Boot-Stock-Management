@@ -5,13 +5,13 @@ import com.haidar.gestiondestock.Exception.ErrorCodes;
 import com.haidar.gestiondestock.Exception.InvalidEntityException;
 import com.haidar.gestiondestock.dto.ArticleDto;
 import com.haidar.gestiondestock.dto.LigneVenteDto;
+import com.haidar.gestiondestock.dto.MvtStockDto;
 import com.haidar.gestiondestock.dto.VentesDto;
-import com.haidar.gestiondestock.model.Article;
-import com.haidar.gestiondestock.model.LigneVente;
-import com.haidar.gestiondestock.model.Ventes;
+import com.haidar.gestiondestock.model.*;
 import com.haidar.gestiondestock.repository.ArticleRepository;
 import com.haidar.gestiondestock.repository.LigneVenteRepository;
 import com.haidar.gestiondestock.repository.VentesRepository;
+import com.haidar.gestiondestock.service.MvtStkService;
 import com.haidar.gestiondestock.service.VenteService;
 import com.haidar.gestiondestock.validator.VentesValidator;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -30,12 +31,14 @@ public class VenteServiceImpl implements VenteService {
     private VentesRepository ventesRepository;
     private LigneVenteRepository ligneVenteRepository;
     private ArticleRepository articleRepository;
+    private MvtStkService mvtStkService;
     @Autowired
     public VenteServiceImpl(VentesRepository ventesRepository, LigneVenteRepository ligneVenteRepository,
-                                                        ArticleRepository articleRepository) {
+                            ArticleRepository articleRepository, MvtStkService mvtStkService) {
         this.ventesRepository = ventesRepository;
         this.ligneVenteRepository = ligneVenteRepository;
         this.articleRepository = articleRepository;
+        this.mvtStkService = mvtStkService;
     }
 
     @Override
@@ -64,6 +67,7 @@ public class VenteServiceImpl implements VenteService {
             LigneVente ligneVente = LigneVenteDto.toEntity(ligneVenteDto);
             ligneVente.setVentes(saveVentes);
             ligneVenteRepository.save(ligneVente);
+            updateMvtStk(ligneVente);
         });
         return VentesDto.fromEntity(saveVentes);
     }
@@ -112,5 +116,17 @@ public class VenteServiceImpl implements VenteService {
 
         ventesRepository.deleteById(id);
 
+    }
+
+    private void updateMvtStk(LigneVente lig) {
+        MvtStockDto mvtStkDto = MvtStockDto.builder()
+                .article(ArticleDto.fromEntity(lig.getArticle()))
+                .dateMvt(Instant.now())
+                .typeMvtStock(TypeMvtStock.SORTIE)
+                .sourceMvt(SourceMvtStock.VENTE)
+                .quantite(lig.getQuantite())
+                .idEntreprise(lig.getIdEntreprise())
+                .build();
+        mvtStkService.sortieStock(mvtStkDto);
     }
 }

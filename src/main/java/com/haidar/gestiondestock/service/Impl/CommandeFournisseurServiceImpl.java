@@ -8,6 +8,7 @@ import com.haidar.gestiondestock.dto.*;
 import com.haidar.gestiondestock.model.*;
 import com.haidar.gestiondestock.repository.*;
 import com.haidar.gestiondestock.service.CommandeFournisseurService;
+import com.haidar.gestiondestock.service.MvtStkService;
 import com.haidar.gestiondestock.validator.ArticleValidator;
 import com.haidar.gestiondestock.validator.CommandeClientValidator;
 import com.haidar.gestiondestock.validator.CommandeFournisseurValidator;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -29,16 +31,19 @@ public class CommandeFournisseurServiceImpl implements CommandeFournisseurServic
     private CommandeFournisseurRepository commandeFournisseurRepository;
     private FournisseurRepository fournisseurRepository;
     private ArticleRepository articleRepository;
-    LigneCommandeFournisseurRepository ligneCommandeFournisseurRepository;
+    private LigneCommandeFournisseurRepository ligneCommandeFournisseurRepository;
+    private MvtStkService mvtStkService;
     @Autowired
     public CommandeFournisseurServiceImpl(CommandeFournisseurRepository commandeFournisseurRepository,
                                      FournisseurRepository fournisseurRepository,
                                      ArticleRepository articleRepository,
-                                     LigneCommandeFournisseurRepository ligneCommandeFournisseurRepository) {
+                                     LigneCommandeFournisseurRepository ligneCommandeFournisseurRepository,
+                                          MvtStkService mvtStkService) {
         this.commandeFournisseurRepository = commandeFournisseurRepository;
         this.fournisseurRepository = fournisseurRepository;
         this.articleRepository = articleRepository;
         this.ligneCommandeFournisseurRepository = ligneCommandeFournisseurRepository;
+        this.mvtStkService = mvtStkService;
     }
 
     @Override
@@ -139,9 +144,11 @@ public class CommandeFournisseurServiceImpl implements CommandeFournisseurServic
         CommandeFournisseurDto commandeFournisseur = checkEtatCommande(idCommande);
         commandeFournisseur.setEtatCommand(etatCommande);
 
-      return CommandeFournisseurDto.fromEntity(
-              commandeFournisseurRepository.save(CommandeFournisseurDto.toEntity(commandeFournisseur))
-      );
+        CommandeFournisseur savedCommande = commandeFournisseurRepository.save(CommandeFournisseurDto.toEntity(commandeFournisseur));
+        if (commandeFournisseur.isCommandeLivree()) {
+            updateMvtStk(idCommande);
+        }
+        return CommandeFournisseurDto.fromEntity(savedCommande);
     }
     @Override
     public CommandeFournisseurDto updateQuantiteCommande(Integer idCommande, Integer idLigneCommande, BigDecimal quantite) {
@@ -263,5 +270,24 @@ public class CommandeFournisseurServiceImpl implements CommandeFournisseurServic
                     "Aucune ligne commande fournisseur n'a ete trouve avec l'ID " + idLigneCommande, ErrorCodes.COMMANDE_FOURNISSEUR_NOT_FOUND);
         }
         return ligneCommandeFournisseurOptional;
+    }
+
+    private void updateMvtStk(Integer idCommande) {
+        List<LigneCommandeFournisseur> ligneCommandeFournisseur = ligneCommandeFournisseurRepository.findAllByCommandeFournisseurId(idCommande);
+        ligneCommandeFournisseur.forEach(lig -> {
+            effectuerEntree(lig);
+        });
+    }
+
+    private void effectuerEntree(LigneCommandeFournisseur lig) {
+        MvtStockDto mvtStkDto = MvtStockDto.builder()
+                .article(ArticleDto.fromEntity(lig.getArticle()))
+                .dateMvt(Instant.now())
+                .typeMvtStock(TypeMvtStock.ENTREE)
+                .sourceMvt(SourceMvtStock.COMMANDE_FOURNISSEUR)
+                .quantite(lig.getQuantite())
+                .idEntreprise(lig.getIdEntreprise())
+                .build();
+        mvtStkService.entreeStock(mvtStkDto);
     }
 }

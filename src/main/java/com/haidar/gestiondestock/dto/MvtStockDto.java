@@ -1,6 +1,7 @@
 package com.haidar.gestiondestock.dto;
 
 import com.haidar.gestiondestock.model.MvtStock;
+import com.haidar.gestiondestock.model.SourceMvtStock;
 import com.haidar.gestiondestock.model.TypeMvtStock;
 import lombok.Builder;
 import lombok.Data;
@@ -16,6 +17,8 @@ public class MvtStockDto {
     private Instant dateMvt;
     private BigDecimal quantite;
     private TypeMvtStock typeMvtStock;
+    private SourceMvtStock sourceMvt;
+    private Integer idEntreprise;
 
     public static MvtStockDto fromEntity(MvtStock mvtStock) {
         if (mvtStock == null) {
@@ -27,6 +30,8 @@ public class MvtStockDto {
                 .dateMvt(mvtStock.getDateMvt())
                 .quantite(mvtStock.getQuantite())
                 .typeMvtStock(mvtStock.getTypeMvtStock())
+               .sourceMvt(mvtStock.getSourceMvt())
+               .idEntreprise(mvtStock.getIdEntreprise())
                 .build();
     }
 
@@ -38,7 +43,9 @@ public class MvtStockDto {
         mvtStock.setId(mvtStockDto.getId());
         mvtStock.setDateMvt(mvtStock.getDateMvt());
         mvtStock.setQuantite(mvtStockDto.getQuantite());
+        mvtStock.setSourceMvt(mvtStockDto.getSourceMvt());
         mvtStock.setTypeMvtStock(mvtStockDto.getTypeMvtStock());
+        mvtStock.setIdEntreprise(mvtStockDto.getIdEntreprise());
         return mvtStock;
     }
 
