@@ -3,6 +3,7 @@ package com.haidar.gestiondestock.service.Impl;
 import com.haidar.gestiondestock.Exception.EntityNotFoundException;
 import com.haidar.gestiondestock.Exception.ErrorCodes;
 import com.haidar.gestiondestock.Exception.InvalidEntityException;
+import com.haidar.gestiondestock.Exception.InvalidOperationException;
 import com.haidar.gestiondestock.dto.ArticleDto;
 import com.haidar.gestiondestock.dto.LigneVenteDto;
 import com.haidar.gestiondestock.dto.MvtStockDto;
@@ -112,6 +113,11 @@ public class VenteServiceImpl implements VenteService {
         if(id == null) {
             log.error("Client is null");
             return;
+        }
+        List<LigneVente> ligneVentes = ligneVenteRepository.findAllByVenteId(id);
+        if (!ligneVentes.isEmpty()) {
+            throw new InvalidOperationException("Impossible de supprimer une vente ...",
+                    ErrorCodes.VENTE_ALREADY_IN_USE);
         }
 
         ventesRepository.deleteById(id);

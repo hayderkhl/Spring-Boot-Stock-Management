@@ -3,8 +3,12 @@ package com.haidar.gestiondestock.service.Impl;
 import com.haidar.gestiondestock.Exception.EntityNotFoundException;
 import com.haidar.gestiondestock.Exception.ErrorCodes;
 import com.haidar.gestiondestock.Exception.InvalidEntityException;
+import com.haidar.gestiondestock.Exception.InvalidOperationException;
 import com.haidar.gestiondestock.dto.FournisseurDto;
+import com.haidar.gestiondestock.model.CommandeClient;
+import com.haidar.gestiondestock.model.CommandeFournisseur;
 import com.haidar.gestiondestock.model.Fournisseur;
+import com.haidar.gestiondestock.repository.CommandeFournisseurRepository;
 import com.haidar.gestiondestock.repository.FournisseurRepository;
 import com.haidar.gestiondestock.service.FournisseurService;
 import com.haidar.gestiondestock.validator.FournisseurValidator;
@@ -20,6 +24,7 @@ import java.util.stream.Collectors;
 public class FournisseurServiceImpl implements FournisseurService {
 
     private FournisseurRepository fournisseurRepository;
+    private CommandeFournisseurRepository commandeFournisseurRepository;
     @Autowired
     public FournisseurServiceImpl(FournisseurRepository fournisseurRepository) {
         this.fournisseurRepository = fournisseurRepository;
@@ -64,6 +69,12 @@ public class FournisseurServiceImpl implements FournisseurService {
         if(id == null) {
             log.error("Fournisseur is null");
             return;
+        }
+
+        List<CommandeFournisseur> commandeFournisseur = commandeFournisseurRepository.findAllByFournisseurId(id);
+        if (!commandeFournisseur.isEmpty()) {
+            throw new InvalidOperationException("Impossible de supprimer un fournisseur qui a deja des commandes",
+                    ErrorCodes.FOURNISSEUR_ALREADY_IN_USE);
         }
 
         fournisseurRepository.deleteById(id);

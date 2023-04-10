@@ -8,13 +8,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import static com.haidar.gestiondestock.utils.Constants.APP_ROOT;
 import static com.haidar.gestiondestock.utils.Constants.AUTHENTICATION_ENDPOINT;
 
-@Api("authentication")
+@Api(APP_ROOT + "/authenticate")
 //@RequestMapping("/api/v1/authentication/")
 public interface AuthenticationApi {
 
-    @PostMapping(AUTHENTICATION_ENDPOINT + "/authenticate")
+    @PostMapping(APP_ROOT + "/authenticate/auth")
     public ResponseEntity<AuthenticationRespense> authenticate(@RequestBody AuthenticationRequest request);
 
 }

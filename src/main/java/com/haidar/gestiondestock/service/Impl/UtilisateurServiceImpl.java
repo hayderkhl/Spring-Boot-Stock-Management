@@ -16,6 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -39,6 +40,10 @@ public class UtilisateurServiceImpl implements UtilisateurService {
             log.error("Article is not Utilisateur {}", dto);
             throw new InvalidEntityException("L'utilisateur n'est pas valide", ErrorCodes.UTILISATEUR_NOT_FOUND);
         }
+        if(userAlreadyExists(dto.getEmail())) {
+            throw new InvalidEntityException("Un autre utilisateur avec le meme email existe deja", ErrorCodes.UTILISATEUR_ALREADY_EXISTS,
+                    Collections.singletonList("Un autre utilisateur avec le meme email existe deja dans la BDD"));
+        }
 
         String encodedPassword = passwordEncoder.encode(dto.getMotDePasse());
         dto.setMotDePasse(encodedPassword);
@@ -46,6 +51,10 @@ public class UtilisateurServiceImpl implements UtilisateurService {
         return UtilisateurDto.fromEntity(utilisateurRepository.save(
                 UtilisateurDto.toEntity(dto)
         ));
+    }
+    private boolean userAlreadyExists(String email) {
+        Optional<Utilisateur> user = utilisateurRepository.findUtilisateurByEmail(email);
+        return user.isPresent();
     }
 
     @Override
@@ -96,8 +105,11 @@ public class UtilisateurServiceImpl implements UtilisateurService {
             log.warn("aucun utilisateur de cette ID");
             throw new EntityNotFoundException("Utilisateur not found", ErrorCodes.UTILISATEUR_NOT_FOUND);
         }
+
+        String encodedPassword = passwordEncoder.encode(dto.getMotDePasse());
+
         Utilisateur utilisateur = utilisateurOptional.get();
-        utilisateur.setMotDePasse(dto.getMotDePasse());
+        utilisateur.setMotDePasse(encodedPassword);
         return UtilisateurDto.fromEntity(
                 utilisateurRepository.save(utilisateur)
         );

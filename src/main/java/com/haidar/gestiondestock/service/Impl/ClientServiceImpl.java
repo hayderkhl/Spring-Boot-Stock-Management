@@ -3,11 +3,14 @@ package com.haidar.gestiondestock.service.Impl;
 import com.haidar.gestiondestock.Exception.EntityNotFoundException;
 import com.haidar.gestiondestock.Exception.ErrorCodes;
 import com.haidar.gestiondestock.Exception.InvalidEntityException;
+import com.haidar.gestiondestock.Exception.InvalidOperationException;
 import com.haidar.gestiondestock.dto.ClientDto;
 import com.haidar.gestiondestock.dto.UtilisateurDto;
 import com.haidar.gestiondestock.model.Client;
+import com.haidar.gestiondestock.model.CommandeClient;
 import com.haidar.gestiondestock.model.Utilisateur;
 import com.haidar.gestiondestock.repository.ClientRepository;
+import com.haidar.gestiondestock.repository.CommandeClientRepository;
 import com.haidar.gestiondestock.repository.UtilisateurRepository;
 import com.haidar.gestiondestock.service.ClientService;
 import com.haidar.gestiondestock.validator.ClientValidator;
@@ -24,10 +27,12 @@ import java.util.stream.Collectors;
 @Slf4j
 public class ClientServiceImpl implements ClientService {
 
+    private CommandeClientRepository commandeClientRepository;
     private ClientRepository clientRepository;
     @Autowired
-    public ClientServiceImpl(ClientRepository clientRepository) {
+    public ClientServiceImpl(ClientRepository clientRepository, CommandeClientRepository commandeClientRepository) {
         this.clientRepository = clientRepository;
+        this.commandeClientRepository = commandeClientRepository;
     }
 
     @Override
@@ -68,6 +73,11 @@ public class ClientServiceImpl implements ClientService {
         if(id == null) {
             log.error("Client is null");
             return;
+        }
+        List<CommandeClient> commandeClients = commandeClientRepository.findAllByClientId(id);
+        if (!commandeClients.isEmpty()) {
+            throw new InvalidOperationException("Impossible de supprimer un client qui a deja des commande clients",
+                    ErrorCodes.CLIENT_ALREADY_IN_USE);
         }
 
         clientRepository.deleteById(id);
