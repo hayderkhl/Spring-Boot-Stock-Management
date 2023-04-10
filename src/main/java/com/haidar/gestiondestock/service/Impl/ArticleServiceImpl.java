@@ -3,11 +3,15 @@ package com.haidar.gestiondestock.service.Impl;
 import com.haidar.gestiondestock.Exception.EntityNotFoundException;
 import com.haidar.gestiondestock.Exception.ErrorCodes;
 import com.haidar.gestiondestock.Exception.InvalidEntityException;
+import com.haidar.gestiondestock.Exception.InvalidOperationException;
 import com.haidar.gestiondestock.dto.ArticleDto;
 import com.haidar.gestiondestock.dto.LigneCommandeClientDto;
 import com.haidar.gestiondestock.dto.LigneCommandeFournisseurDto;
 import com.haidar.gestiondestock.dto.LigneVenteDto;
 import com.haidar.gestiondestock.model.Article;
+import com.haidar.gestiondestock.model.LigneCommandeClient;
+import com.haidar.gestiondestock.model.LigneCommandeFournisseur;
+import com.haidar.gestiondestock.model.LigneVente;
 import com.haidar.gestiondestock.repository.ArticleRepository;
 import com.haidar.gestiondestock.repository.LigneCommandeClientRepository;
 import com.haidar.gestiondestock.repository.LigneCommandeFournisseurRepository;
@@ -121,6 +125,21 @@ public class ArticleServiceImpl implements ArticleService {
         if(id == null) {
             log.error("Article is null");
             return;
+        }
+
+        List<LigneCommandeClient> ligneCommandeClients = ligneCommandeClientRepository.findAllByArticleId(id);
+        if (!ligneCommandeClients.isEmpty()) {
+            throw new InvalidOperationException("Impossible de supprimer un article deja utilise dans des commandes client", ErrorCodes.ARTICLE_ALREADY_IN_USE);
+        }
+        List<LigneCommandeFournisseur> ligneCommandeFournisseurs = ligneCommandeFournisseurRepository.findAllByArticleId(id);
+        if (!ligneCommandeFournisseurs.isEmpty()) {
+            throw new InvalidOperationException("Impossible de supprimer un article deja utilise dans des commandes fournisseur",
+                    ErrorCodes.ARTICLE_ALREADY_IN_USE);
+        }
+        List<LigneVente> ligneVentes = ligneVenteRepository.findAllByArticleId(id);
+        if (!ligneVentes.isEmpty()) {
+            throw new InvalidOperationException("Impossible de supprimer un article deja utilise dans des ventes",
+                    ErrorCodes.ARTICLE_ALREADY_IN_USE);
         }
         articleRepository.deleteById(id);
     }

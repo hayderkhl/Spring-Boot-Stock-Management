@@ -38,17 +38,18 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .passwordEncoder(passwordEncoder());
     }
 
-    @Override
-    public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/**/authenticate");
-    }
+//    @Override
+//    public void configure(WebSecurity web) throws Exception {
+//        web.ignoring().antMatchers("/**/authenticate");
+//    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.addFilterBefore(corsFilter(), SessionManagementFilter.class)
 
-                .authorizeRequests().antMatchers("/**/authenticate",
+                .authorizeRequests().antMatchers("/**/authenticate/auth",
                         "/**/entreprises/create",
+                        "/**/utilisateurs/create",
                         "/v2/api-docs",
                         "/swagger-resources",
                         "/swagger-resources/**",
